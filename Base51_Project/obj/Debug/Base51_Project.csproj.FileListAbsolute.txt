@@ -1,0 +1,5 @@
+C:\Users\fmi\Desktop\HSB\Base51_Project\Base51_Project\bin\Debug\Base51_Project.exe.config
+C:\Users\fmi\Desktop\HSB\Base51_Project\Base51_Project\bin\Debug\Base51_Project.exe
+C:\Users\fmi\Desktop\HSB\Base51_Project\Base51_Project\bin\Debug\Base51_Project.pdb
+C:\Users\fmi\Desktop\HSB\Base51_Project\Base51_Project\obj\Debug\Base51_Project.exe
+C:\Users\fmi\Desktop\HSB\Base51_Project\Base51_Project\obj\Debug\Base51_Project.pdb

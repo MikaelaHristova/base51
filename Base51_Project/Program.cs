@@ -1,10 +1,8 @@
-﻿namespace ElevatorForBaseArea51
-{
+﻿namespace ElevatorForBaseArea51 {
     using System;
     using System.Threading;
 
-    public class Base51
-    {
+    public class Base51 {
 
         public const int elevatorTimePerFloor = 1000;
 
@@ -16,8 +14,7 @@
 
         public static int currentElevatorFloor;
 
-        public static void Main()
-        {
+        public static void Main() {
             Console.WriteLine("Press ESC to cancel the process");
 
 
@@ -31,8 +28,7 @@
             //създавамемасив от броя на агентите
             var agents = new Agent[agentsCount];
             //обхождам масива и създавам нов агент и попълвам масива с тези агенти
-            for (int i = 0; i < agentsCount; i++)
-            {
+            for (int i = 0; i < agentsCount; i++) {
                 var agent = new Agent();
                 agent.id = rand.Next(1, 20);
                 //на кой етаж се намира
@@ -49,20 +45,17 @@
             //създавам масив от тредове
             var agentThreads = new Thread[agents.Length];
             //попълвам го
-            for (int i = 0; i < agentThreads.Length; i++)
-            {
+            for (int i = 0; i < agentThreads.Length; i++) {
                 agentThreads[i] = new Thread(agents[i].Run);
                 agentThreads[i].Start(cts.Token);
             }
             char pressedKey = ' ';
-            while (pressedKey != (char)ConsoleKey.Escape)
-            {
+            while (pressedKey != (char)ConsoleKey.Escape) {
                 //изчаква докато се натиске ескейп и проверява дали да спре и се върти докато не натиснем ескейп
                 //отделно спираме програмата и спираме нишките
 
                 pressedKey = Console.ReadKey().KeyChar;
-                if (pressedKey == (char)ConsoleKey.Escape)
-                {
+                if (pressedKey == (char)ConsoleKey.Escape) {
 
                     Console.WriteLine("Stopping");
                     // казва на нишките да спрат първо 
@@ -70,8 +63,7 @@
 
                     cts.Cancel();
                     // обикалям всички трейдове и се изчакват преди да продължат
-                    foreach (var agentThread in agentThreads)
-                    {
+                    foreach (var agentThread in agentThreads) {
                         agentThread.Join();
                     }
 
@@ -80,23 +72,19 @@
         }
     }
 
-    public class Agent
-    {
+    public class Agent {
         public int id;
         public int currentFloor;
         public SecurityLevel securityLevelAccess;
         // пускам нишката и сe влиза в безкраен цикъл(  усе елеватор)
-        public void Run(object tag)
-        {
+        public void Run(object tag) {
             CancellationToken token = (CancellationToken)tag;
 
-            while (true)
-            {
+            while (true) {
                 //семафора изчаква за да не влезнат всички нишки заедно
                 Base51.elevatorSemaphore.WaitOne();
                 //нишката преди да влезне в асансжора пита дали е освободено
-                if (token.IsCancellationRequested)
-                {
+                if (token.IsCancellationRequested) {
                     //освобождава семфора за заключване,което значи че нишката пе приключила
                     //работа и е сводобо да влезне другатаа
                     Base51.elevatorSemaphore.Release();
@@ -109,8 +97,7 @@
             }
         }
 
-        public void UseElevator(CancellationToken token)
-        {
+        public void UseElevator(CancellationToken token) {
             Console.WriteLine();
             Console.WriteLine("-----------------");
             Console.WriteLine();
@@ -128,10 +115,8 @@
             Console.WriteLine("Elevator reached floor " + Base51.currentElevatorFloor);
             //агента влиза в асан
             //влизаме в безкраен цикъл 
-            while (true)
-            {
-                if (token.IsCancellationRequested)
-                {
+            while (true) {
+                if (token.IsCancellationRequested) {
                     break;
                 }
                 //стига до някакъв етаж и директно си правим проверка дали този етаж е достъпен,
@@ -151,65 +136,52 @@
                 Console.WriteLine("Elevator reached with agent " + this.id + " floor " + Base51.currentElevatorFloor);
                 //тук проверявам дали има достъп дадения агент
 
-                if (IsFloorAccessible(this.securityLevelAccess, Base51.currentElevatorFloor))
-                {
+                if (IsFloorAccessible(this.securityLevelAccess, Base51.currentElevatorFloor)) {
                     Console.WriteLine("Agent " + this.id + " got off at floor " + currentFloor);
                     break;
                 }
-                else
-                {
+                else {
                     Console.WriteLine("ACCESS DENIED for floor " + currentFloor);
                 }
                 Console.WriteLine();
             }
         }
 
-        public static bool IsFloorAccessible(SecurityLevel securityLevelAccess, int floorLevel)
-        {
+        public static bool IsFloorAccessible(SecurityLevel securityLevelAccess, int floorLevel) {
             // застъпвам масива по горе за етажите и проверяваме дали си съвпадат
-            switch (securityLevelAccess)
-            {
-                case SecurityLevel.Confidential:
-                    {
-                        if (Base51.floors[floorLevel] == "G")
-                        {
+            switch (securityLevelAccess) {
+                case SecurityLevel.Confidential: {
+                        if (Base51.floors[floorLevel] == "G") {
                             return true;
                         }
-                        else
-                        {
+                        else {
                             return false;
                         }
 
-                        break;
+                        
                     }
-                case SecurityLevel.Secret:
-                    {
-                        if (Base51.floors[floorLevel] == "G" || Base51.floors[floorLevel] == "S")
-                        {
+                case SecurityLevel.Secret: {
+                        if (Base51.floors[floorLevel] == "G" || Base51.floors[floorLevel] == "S") {
                             return true;
                         }
-                        else
-                        {
+                        else {
                             return false;
                         }
 
-                        break;
+                        
                     }
-                case SecurityLevel.TopSecret:
-                    {
+                case SecurityLevel.TopSecret: {
                         return true;
-                        break;
+                        
                     }
-                default:
-                    {
+                default: {
                         return false;
                     }
             }
         }
     }
     //типа на секиурити аксеса
-    public enum SecurityLevel
-    {
+    public enum SecurityLevel {
         Confidential,
         Secret,
         TopSecret
